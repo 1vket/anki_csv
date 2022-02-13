@@ -5,7 +5,10 @@ import sys
 translator = Translator()
 p = Pinyin()
 
-csv_file = "test.csv"
+if len(sys.argv) < 2:
+  csv_file = input("csv file >> ")
+else:
+  csv_file = sys.argv[1]
 
 S = set()
 with open(csv_file, 'r') as f:
