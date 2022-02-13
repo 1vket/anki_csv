@@ -1,6 +1,7 @@
 from googletrans import Translator
 from xpinyin import Pinyin
 import sys
+import re
 
 translator = Translator()
 p = Pinyin()
@@ -57,7 +58,13 @@ while True:
   text = f"{d['en']}\t{d['ja']}\t{d['zh-tw']}\t{d['pin']}"
 
   with open(tsv_file, 'a') as f:
-    if d['en'] not in S:
+    if d['en'] in S:
+      print('did not add: Already exists')
+    elif re.search(r'[a-z]',d['ja']):
+      print('did not add: Translation failed')
+    elif re.search(r'[a-z]',d['zh-tw']):
+      print('did not add: Translation failed')
+    else:
       f.write(text + '\n')
 
   print(text)
