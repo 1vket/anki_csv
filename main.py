@@ -6,14 +6,14 @@ translator = Translator()
 p = Pinyin()
 
 if len(sys.argv) < 2:
-  csv_file = input("csv file >> ")
+  tsv_file = input("tsv file >> ")
 else:
-  csv_file = sys.argv[1]
+  tsv_file = sys.argv[1]
 
 S = set()
-with open(csv_file, 'r') as f:
+with open(tsv_file, 'r') as f:
   for line in f:
-    S.add(line.split(',')[0])
+    S.add(line.split('\t')[0])
 
 mode = ('en', 'ja', 'zh-tw')
 
@@ -33,12 +33,12 @@ while True:
     continue
 
   if user_input == 'rm':
-    with open(csv_file, 'r') as f:
+    with open(tsv_file, 'r') as f:
       lines = []
       for line in f:
         lines.append(line)
       lines = lines[:-1]
-    with open(csv_file, 'w') as f:
+    with open(tsv_file, 'w') as f:
       f.writelines(lines)
     continue
 
@@ -54,9 +54,9 @@ while True:
 
   d['pin'] = p.get_pinyin(d['zh-tw'])
 
-  text = f"{d['en']},{d['ja']},{d['zh-tw']},{d['pin']}"
+  text = f"{d['en']}\t{d['ja']}\t{d['zh-tw']}\t{d['pin']}"
 
-  with open(csv_file, 'a') as f:
+  with open(tsv_file, 'a') as f:
     if d['en'] not in S:
       f.write(text + '\n')
 
