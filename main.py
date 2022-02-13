@@ -5,10 +5,16 @@ import sys
 translator = Translator()
 p = Pinyin()
 
-csv_file = "data.csv"
+csv_file = "test.csv"
 
-src = 'ja'
-dest = 'zh-tw'
+S = set()
+with open(csv_file, 'r') as f:
+  for line in f:
+    S.add(line.split(',')[0])
+
+mode = ('en', 'ja', 'zh-tw')
+
+src = 'en'
 
 while True:
   user_input = input(f"{src} >> ")
@@ -17,7 +23,10 @@ while True:
     sys.exit()
 
   if user_input == 'c':
-    src, dest = dest, src
+    while True:
+      src = input("select: en ja zh-tw >> ")
+      if src in mode:
+        break
     continue
 
   if user_input == 'rm':
@@ -30,18 +39,23 @@ while True:
       f.writelines(lines)
     continue
 
-  translated = translator.translate(user_input, src=src, dest=dest)
-
   d = {}
   d[src] = user_input
-  d[dest] = translated.text
 
-  d['pron'] = p.get_pinyin(d['zh-tw'])
+  for dest in mode:
+    if dest == src:
+      continue
+    
+    translated = translator.translate(user_input, src=src, dest=dest)
+    d[dest] = translated.text
 
-  text = f"{d['ja']},{d['zh-tw']},{d['pron']}"
+  d['pin'] = p.get_pinyin(d['zh-tw'])
+
+  text = f"{d['en']},{d['ja']},{d['zh-tw']},{d['pin']}"
 
   with open(csv_file, 'a') as f:
-    f.write(text + '\n')
+    if d['en'] not in S:
+      f.write(text + '\n')
 
   print(text)
 
